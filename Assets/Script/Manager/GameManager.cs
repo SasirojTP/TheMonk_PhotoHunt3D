@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 public class GameManager : MonoBehaviour
 {
     public static GameManager inst;
@@ -14,22 +15,33 @@ public class GameManager : MonoBehaviour
     [SerializeField] Canvas Canvas_GamePlay;
     [SerializeField] Button GamePlay_BT_SwapCamera;
     [SerializeField] Button GamePlay_BT_Pause;
+    [SerializeField] TextMeshProUGUI TEXT_YouWin;
 
     [Header("Prefab")]
     [SerializeField] GameObject Bottle_Low;
+    [SerializeField] GameObject Bottle_Low_Hunt;
+
     [SerializeField] GameObject Soda_Medium;
+    [SerializeField] GameObject Soda_Medium_Hunt;
+
     [SerializeField] GameObject PropaneTank_High;
+    [SerializeField] GameObject PropaneTank_High_Hunt;
 
     public enum GameMode { Easy, Normal, Hard };
     public enum CameraState { BaseModel , PhotoHunt}
+    public enum RotateState { NotRotate, Rotating }
     [Header("Logic")]
     public GameMode gameMode;
     public CameraState cameraState;
+    public RotateState rotateState;
     [SerializeField] Transform POS_BaseModelPos;
     [SerializeField] Transform POS_PhotoHuntPos;
     [SerializeField] Transform holder;
     GameObject spawnBaseModel;
     GameObject spawnPhotoHunt;
+    [SerializeField] int wrongPointRemaining;
+    Ray ray;
+    RaycastHit raycastHit;
     private void Start()
     {
         inst = this;
@@ -49,27 +61,57 @@ public class GameManager : MonoBehaviour
         Canvas_GamePlay.gameObject.SetActive(false);
     }
 
-    Ray ray;
-    RaycastHit raycastHit;
     private void Update()
     {
-        //if (Input.touchCount > 0)
-        //{
-        //    Touch touch = Input.GetTouch(0);
-        //    if (touch.phase == TouchPhase.Began)
-        //    {
-        //        print("Touch");
-        //    }
-        //}
-        //}
-        //if (Input.GetMouseButton(0) && cameraState == CameraState.PhotoHunt)
-        //{
-        //    ray = new Ray(Camera.main.transform.position, Vector3.forward);
-        //    if(Physics.Raycast(ray, out raycastHit, 100f))
-        //    {
-        //        Debug.Log(raycastHit.transform.gameObject.name);
-        //    }
-        //}
+        if(rotateState == RotateState.NotRotate)
+            OnTouch();
+    }
+    void OnTouch()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                CheckTouchObject();
+                //print("Touch");
+            }
+        }
+
+        if (Input.GetMouseButton(0) && cameraState == CameraState.PhotoHunt && Input.touchCount <= 0)
+        {
+            CheckTouchObject();
+        }
+    }
+    void CheckTouchObject()
+    {
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out raycastHit, 50f))
+        {
+            if (raycastHit.collider.CompareTag("WrongPoint"))
+            {
+                raycastHit.transform.gameObject.SetActive(false);
+                wrongPointRemaining--;
+                CheckEndGame();
+            }
+        }
+    }
+    void CheckEndGame()
+    {
+        if(wrongPointRemaining <= 0)
+        {
+            TEXT_YouWin.gameObject.SetActive(true);
+            GamePlay_BT_SwapCamera.interactable = false;
+            GamePlay_BT_Pause.interactable = false;
+            StartCoroutine(WaitForEndGame(3.0f));
+        }
+    }
+    IEnumerator WaitForEndGame(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        ClearModel();
+        MainMenuManager.inst.GoToMainMenu();
+        TEXT_YouWin.gameObject.SetActive(false);
     }
 
     public void StartGame(GameMode GameMode)
@@ -77,6 +119,7 @@ public class GameManager : MonoBehaviour
         gameMode = GameMode;
         Canvas_GamePlay.gameObject.SetActive(true);
         SetLevelModel();
+        TEXT_YouWin.gameObject.SetActive(false);
     }
     void SetLevelModel()
     {
@@ -84,16 +127,19 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.Easy:
                 spawnBaseModel = Instantiate(Bottle_Low, POS_BaseModelPos.position, Quaternion.identity, holder);
-                spawnPhotoHunt = Instantiate(Bottle_Low, POS_PhotoHuntPos.position, Quaternion.identity, holder);
+                spawnPhotoHunt = Instantiate(Bottle_Low_Hunt, POS_PhotoHuntPos.position, Quaternion.identity, holder);
+                wrongPointRemaining = 2;
                 break;
             case GameMode.Normal:
                 spawnBaseModel = Instantiate(Soda_Medium, POS_BaseModelPos.position, Quaternion.identity, holder);
-                spawnPhotoHunt = Instantiate(Soda_Medium, POS_PhotoHuntPos.position, Quaternion.identity, holder);
-                
+                spawnPhotoHunt = Instantiate(Soda_Medium_Hunt, POS_PhotoHuntPos.position, Quaternion.identity, holder);
+                wrongPointRemaining = 3;
+
                 break;
             case GameMode.Hard:
                 spawnBaseModel = Instantiate(PropaneTank_High, POS_BaseModelPos.position, Quaternion.identity, holder);
-                spawnPhotoHunt = Instantiate(PropaneTank_High, POS_PhotoHuntPos.position, Quaternion.identity, holder);
+                spawnPhotoHunt = Instantiate(PropaneTank_High_Hunt, POS_PhotoHuntPos.position, Quaternion.identity, holder);
+                wrongPointRemaining = 4;
                 break;
         }
         spawnBaseModel.GetComponent<RotateObject>().SetReferenceCameraState(CameraState.BaseModel);
@@ -126,5 +172,8 @@ public class GameManager : MonoBehaviour
         ClearModel();
         MainMenuManager.inst.GoToMainMenu();
     }
-
+    public void SetRotateState(RotateState RotateState)
+    {
+        rotateState = RotateState;
+    }
 }

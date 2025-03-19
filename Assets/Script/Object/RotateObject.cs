@@ -17,7 +17,7 @@ public class RotateObject : MonoBehaviour
         {
             if (Input.touchCount > 0)
             {
-                
+                GameManager.inst.SetRotateState(GameManager.RotateState.Rotating);
                 Touch touch = Input.GetTouch(0);
                 if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
                 {
@@ -33,9 +33,16 @@ public class RotateObject : MonoBehaviour
 
                     rotatePivot.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up), Space.World);
                 }
+                else
+                {
+                    GameManager.inst.SetRotateState(GameManager.RotateState.NotRotate);
+                    print("Not Rotate");
+                }
             }
-            if (Input.GetMouseButton(0))
+
+            if (Input.GetMouseButton(0) && Input.touchCount <= 0)
             {
+                GameManager.inst.SetRotateState(GameManager.RotateState.Rotating);
                 mPosDelta = Input.mousePosition - mPrevPos;
                 if (Vector3.Dot(transform.up, Vector3.up) >= 0)
                 {
@@ -47,6 +54,11 @@ public class RotateObject : MonoBehaviour
                 }
 
                 rotatePivot.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up), Space.World);
+            }
+            if(Input.GetMouseButtonUp(0))
+            {
+                GameManager.inst.SetRotateState(GameManager.RotateState.NotRotate);
+                print("Not Rotate");
             }
         }
 
