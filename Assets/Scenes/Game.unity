@@ -2286,7 +2286,7 @@ MonoBehaviour:
   Bottle_Low: {fileID: 7099333102713289315, guid: 99f7e1455636dfe428b80d201179b51b, type: 3}
   Bottle_Low_Hunt: {fileID: 7099333102713289315, guid: cf0887bcfbebf1b45abcc1f34d80d412, type: 3}
   Soda_Medium: {fileID: 1459413692774955707, guid: 1343c5c3c7e78c3428cd25dc13d93612, type: 3}
-  Soda_Medium_Hunt: {fileID: 1459413692774955707, guid: 00aa0ca380afff441896aaac5ad39789, type: 3}
+  Soda_Medium_Hunt: {fileID: 8703421167265821143, guid: 00aa0ca380afff441896aaac5ad39789, type: 3}
   PropaneTank_High: {fileID: 1920654251269691279, guid: 8b5de8e2cc1930b45add9af97e6eacb1, type: 3}
   PropaneTank_High_Hunt: {fileID: 1920654251269691279, guid: 59775d651b889164dbc1a5dfe9034459, type: 3}
   gameMode: 0

@@ -119,6 +119,11 @@ public class GameManager : MonoBehaviour
     public void StartGame(GameMode GameMode)
     {
         gameMode = GameMode;
+        cameraState = CameraState.BaseModel;
+        rotateState = RotateState.NotRotate;
+        CAM_BaseModel.gameObject.SetActive(true);
+        CAM_PhotoHunt.gameObject.SetActive(false);
+
         Canvas_GamePlay.gameObject.SetActive(true);
         SetLevelModel();
         TEXT_YouWin.gameObject.SetActive(false);
@@ -135,7 +140,8 @@ public class GameManager : MonoBehaviour
             case GameMode.Normal:
                 spawnBaseModel = Instantiate(Soda_Medium, POS_BaseModelPos.position, Quaternion.identity, holder);
                 spawnPhotoHunt = Instantiate(Soda_Medium_Hunt, POS_PhotoHuntPos.position, Quaternion.identity, holder);
-                wrongPointRemaining = 3;
+                spawnPhotoHunt.GetComponent<ObjectMaterial>().RandomMaterial();
+                wrongPointRemaining = 2;
 
                 break;
             case GameMode.Hard:
