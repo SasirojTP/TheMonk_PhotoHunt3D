@@ -6,6 +6,7 @@ public class RotateObject : MonoBehaviour
     Vector3 mPosDelta = Vector3.zero;
     [SerializeField] Transform rotatePivot;
     GameManager.CameraState referenceCameraState;
+    float rotateSpeed = 0.5f;
 
     private void Update()
     {
@@ -24,14 +25,14 @@ public class RotateObject : MonoBehaviour
                     mPosDelta = Input.mousePosition - mPrevPos;
                     if (Vector3.Dot(transform.up, Vector3.up) >= 0)
                     {
-                        rotatePivot.Rotate(transform.up, -Vector3.Dot(mPosDelta, Camera.main.transform.right), Space.World);
+                        rotatePivot.Rotate(transform.up, -Vector3.Dot(mPosDelta * rotateSpeed, Camera.main.transform.right), Space.World);
                     }
                     else
                     {
-                        rotatePivot.Rotate(transform.up, Vector3.Dot(mPosDelta, Camera.main.transform.right), Space.World);
+                        rotatePivot.Rotate(transform.up, Vector3.Dot(mPosDelta * rotateSpeed, Camera.main.transform.right), Space.World);
                     }
 
-                    rotatePivot.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up), Space.World);
+                    rotatePivot.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta * rotateSpeed, Camera.main.transform.up), Space.World);
                 }
                 else
                 {
@@ -46,14 +47,14 @@ public class RotateObject : MonoBehaviour
                 mPosDelta = Input.mousePosition - mPrevPos;
                 if (Vector3.Dot(transform.up, Vector3.up) >= 0)
                 {
-                    rotatePivot.Rotate(transform.up, -Vector3.Dot(mPosDelta, Camera.main.transform.right), Space.World);
+                    rotatePivot.Rotate(transform.up, -Vector3.Dot(mPosDelta * rotateSpeed, Camera.main.transform.right), Space.World);
                 }
                 else
                 {
-                    rotatePivot.Rotate(transform.up, Vector3.Dot(mPosDelta, Camera.main.transform.right), Space.World);
+                    rotatePivot.Rotate(transform.up, Vector3.Dot(mPosDelta * rotateSpeed, Camera.main.transform.right), Space.World);
                 }
 
-                rotatePivot.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up), Space.World);
+                rotatePivot.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta * rotateSpeed, Camera.main.transform.up), Space.World);
             }
             if(Input.GetMouseButtonUp(0))
             {

@@ -112,6 +112,8 @@ public class GameManager : MonoBehaviour
         ClearModel();
         MainMenuManager.inst.GoToMainMenu();
         TEXT_YouWin.gameObject.SetActive(false);
+        GamePlay_BT_SwapCamera.interactable = true;
+        GamePlay_BT_Pause.interactable = true;
     }
 
     public void StartGame(GameMode GameMode)
