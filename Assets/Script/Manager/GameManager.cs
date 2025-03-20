@@ -119,10 +119,10 @@ public class GameManager : MonoBehaviour
     public void StartGame(GameMode GameMode)
     {
         gameMode = GameMode;
-        cameraState = CameraState.BaseModel;
+        cameraState = CameraState.PhotoHunt;
         rotateState = RotateState.NotRotate;
-        CAM_BaseModel.gameObject.SetActive(true);
-        CAM_PhotoHunt.gameObject.SetActive(false);
+        CAM_BaseModel.gameObject.SetActive(false);
+        CAM_PhotoHunt.gameObject.SetActive(true);
 
         Canvas_GamePlay.gameObject.SetActive(true);
         SetLevelModel();
